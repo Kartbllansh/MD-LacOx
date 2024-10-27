@@ -1,0 +1,18 @@
+; Title of run
+title           = Energy Minimization for Ion Addition
+
+; Parameters describing what to do, when to stop and what to save
+integrator      = steep         ; Algorithm for minimization
+emtol           = 100.0         ; Tolerance (stop when max force < 100 kJ/mol/nm)
+emstep          = 0.01          ; Minimization step size
+nsteps          = 50000         ; Maximum number of minimization steps
+
+; Parameters for finding neighbors and calculating interactions
+nstlist         = 10             ; Frequency to update the neighbor list
+cutoff-scheme   = Verlet
+ns_type         = grid          ; Neighbor search method (grid is efficient for larger systems)
+rlist           = 1.2           ; Short-range neighbor list cut-off (nm)
+coulombtype     = cutoff           ; Long-range electrostatic interactions
+rcoulomb        = 1.2           ; Short-range electrostatic cut-off (nm)
+rvdw            = 1.2           ; Short-range van der Waals cut-off (nm)
+pbc             = xyz           ; Periodic boundary conditions in all directions
