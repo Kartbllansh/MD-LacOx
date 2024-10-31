@@ -1,0 +1,55 @@
+title                   = Protein-ligand complex NVT equilibration 
+define                  = -DPOSRES  ; position restrain the protein and ligand
+
+; Run parameters
+integrator              = md        ; leap-frog integrator
+nsteps                  = 70000    ; увеличено для более длительной эквилибровки (200 ps)
+dt                      = 0.002     ; 2 fs
+
+; Output control
+nstenergy               = 500      ; сохранить энергии каждые 0.5 ps
+nstlog                  = 500       ; обновлять лог-файл каждые 0.5 ps
+nstxout-compressed      = 500       ; сохранить координаты каждые 0.5 ps
+
+; Bond parameters
+continuation            = no        ; первый этап динамики
+constraint_algorithm    = lincs     ; холономические ограничения 
+constraints             = h-bonds   ; ограничения для связей с водородом
+lincs_iter              = 1         ; точность LINCS
+lincs_order             = 4         ; также связано с точностью
+
+; Neighbor searching and vdW
+cutoff-scheme           = Verlet
+ns_type                 = grid      ; поиск соседних ячеек
+nstlist                 = 10        ; частота обновления списка соседей
+rlist                   = 1.2       ; радиус для поиска соседей
+vdwtype                 = cutoff
+vdw-modifier            = force-switch
+rvdw-switch             = 1.0
+rvdw                    = 1.2       ; короткий радиус отсечения для взаимодействий вандерваальса (в нм)
+
+; Electrostatics
+coulombtype             = PME       ; Particle Mesh Ewald для долгосрочных электростатических взаимодействий
+rcoulomb                = 1.2       ; короткий радиус отсечения для электростатики (в нм)
+pme_order               = 4         ; кубическая интерполяция
+fourierspacing          = 0.16      ; сеточное расстояние для FFT
+
+; Temperature coupling
+tcoupl                  = V-rescale                     ; модифицированный термостат Берендсена
+tc-grps                 = Protein_Lac Water_and_ions    ; две группы для более точного термостатирования
+tau_t                   = 0.1   0.1                     ; время расслабления в пс
+ref_t                   = 300   300                     ; эталонная температура, по 300 K для каждой группы
+
+; Pressure coupling
+pcoupl                  = no        ; давление не регулируется в NVT
+
+; Periodic boundary conditions
+pbc                     = xyz       ; 3-D периодические границы
+
+; Dispersion correction
+DispCorr                = no        ; коррекция дисперсии не используется для белков с C36
+
+; Velocity generation
+gen_vel                 = yes       ; назначить скорости из распределения Максвелла
+gen_temp                = 300       ; температура для распределения Максвелла
+gen_seed                = -1        ; генерировать случайное семя
